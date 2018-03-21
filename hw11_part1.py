@@ -36,11 +36,14 @@ def populate_tournament_db():
     cur.execute(statement)
     conn.commit()
 
-    # Your code goes here
     # HINTS:
     # Column order in teams.csv file: Seed,Name,ConfRecord
     # Column order in games.csv file: Winner,Loser,WinnerScore,LoserScore,Round,Time
+    # Note: You must convert 'Winner' and 'Loser' to corresponding team ids from
+    #       'Teams'table
     # Column order in rounds.csv file: Name,Date
+
+    # Your code goes here
 
     # Close connection
     conn.commit()

@@ -53,7 +53,7 @@ if __name__ == "__main__":
     print(game_info)
     print("-"*15)
 
-    print_winning_rounds_for_team("Michigan")
+    print_winning_rounds_for_team("Purdue")
     print("-"*15)
 
     status = add_championship_info()
