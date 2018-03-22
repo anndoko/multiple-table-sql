@@ -7,13 +7,7 @@ print('\n*********** PART 1 ***********')
 
 # Creates a database called big10.sqlite
 def create_tournament_db():
-    # Your code goes here
-    pass
 
-# Populates big10.sqlite database using csv files
-def populate_tournament_db():
-
-    # Connect to big10 database
     conn = sqlite.connect('big10.sqlite')
     cur = conn.cursor()
 
@@ -35,6 +29,18 @@ def populate_tournament_db():
     '''
     cur.execute(statement)
     conn.commit()
+
+    # Your code goes here
+
+    conn.close()
+    pass
+
+# Populates big10.sqlite database using csv files
+def populate_tournament_db():
+
+    # Connect to big10 database
+    conn = sqlite.connect('big10.sqlite')
+    cur = conn.cursor()
 
     # HINTS:
     # Column order in teams.csv file: Seed,Name,ConfRecord
