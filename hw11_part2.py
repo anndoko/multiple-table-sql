@@ -39,7 +39,28 @@ def get_info_for_game(game_id):
 # Returns: nothing
 # Note: You must use only one SQL statement in this function.
 def print_winning_rounds_for_team(team_name):
-    pass
+    # connect db
+    conn = sqlite.connect("big10.sqlite")
+    cur = conn.cursor()
+
+    # form the statement
+    statement = '''
+        SELECT wt.Name, r.Name, g.WinnerScore, g.LoserScore
+        FROM Games AS g
+        	JOIN Rounds AS r ON g.Round = r.Id
+        	JOIN Teams AS wt ON g.Winner = wt.Id
+        	JOIN Teams AS it ON g.Loser = it.Id
+        WHERE wt.Name = "{}"
+    '''.format(team_name)
+
+    # excute the statement
+    output = ""
+    rows = cur.execute(statement).fetchall()
+    for row in rows:
+        (TeamName, RoundName, WinnerScore, LoserScore) = row
+        output += "\n{} Won:\n{}: {}-{}\n".format(TeamName, RoundName, WinnerScore, LoserScore)
+    print(output)
+    conn.commit()
 
 # Update the database to include the following Championship game information:
 #   Round Name: “Championship”
@@ -54,7 +75,6 @@ def print_winning_rounds_for_team(team_name):
 # Note: You will need to update the ‘Games’ and ‘Rounds’ tables with the above
 # data.  You are permitted to use multiple SQL statements in this function.
 def add_championship_info():
-    # Your code goes here
     pass
 
 # Update the date for the specified round and the times for each of the games
@@ -64,7 +84,6 @@ def add_championship_info():
 # Note: All of these games will be updated to the same time.
 # You may use multiple SQL statements in this function as well.
 def update_schedule_for_round(round_id, date, time):
-    # Your code goes here
     pass
 
 if __name__ == "__main__":
