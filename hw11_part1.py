@@ -48,8 +48,8 @@ def create_tournament_db():
     statement = '''
         CREATE TABLE 'Games' (
             'Id' INTEGER PRIMARY KEY AUTOINCREMENT,
-            'Winner' TEXT NOT NULL,
-            'Loser' TEXT NOT NULL,
+            'Winner' INTEGER NOT NULL,
+            'Loser' INTEGER NOT NULL,
             'WinnerScore' INTEGER NOT NULL,
             'LoserScore' INTEGER NOT NULL,
             'Round' INTEGER NOT NULL,
@@ -107,19 +107,35 @@ def populate_tournament_db():
 
 
     # read data from CSV (games.csv)
+
     with open("games.csv", 'r') as csv_f:
         csv_data = csv.reader(csv_f)
 
         # This skips the first row of the CSV file
         next(csv_data)
 
+
+        statement = '''
+            SELECT Id, Name
+            FROM Teams
+        '''
+        team_data = cur.execute(statement).fetchall()
+
         for row in csv_data:
-            (Winner, Loser, WinnerScore, LoserScore, Round, Time) = row
+            (WinnerName, LoserName, WinnerScore, LoserScore, Round, Time) = row
+            WinnerId = 0
+            LoserId = 0
+            for team in team_data:
+                if WinnerName == team[1]:
+                    WinnerId = team[0]
+                if LoserName == team[1]:
+                    LoserId = team[0]
+
             insert_statement = '''
                 INSERT INTO Games(Winner, Loser, WinnerScore, LoserScore, Round, Time) VALUES (?, ?, ?, ?, ?, ?);
             '''
             # execute and commit
-            cur.execute(insert_statement, [Winner, Loser, WinnerScore, LoserScore, Round, Time])
+            cur.execute(insert_statement, [WinnerId, LoserId, WinnerScore, LoserScore, Round, Time])
             conn.commit()
 
     # read data from CSV (rounds.csv)
