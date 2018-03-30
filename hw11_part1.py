@@ -13,9 +13,6 @@ def create_tournament_db():
     except:
         print("Failed. Please try again.")
 
-    # Code below provided for your convenience to clear out the big10 database
-    # This is simply to assist in testing your code.  Feel free to comment it
-    # out if you would prefer
     statement = '''
         DROP TABLE IF EXISTS 'Teams';
     '''
@@ -36,9 +33,9 @@ def create_tournament_db():
     statement = '''
         CREATE TABLE 'Teams' (
             'Id' INTEGER PRIMARY KEY AUTOINCREMENT,
-            'Seed' INTEGER,
-            'Name' TEXT,
-            'ConfRecord' TEXT
+            'Seed' INTEGER NOT NULL,
+            'Name' TEXT NOT NULL,
+            'ConfRecord' TEXT NOT NULL
         );
     '''
     try:
@@ -51,12 +48,12 @@ def create_tournament_db():
     statement = '''
         CREATE TABLE 'Games' (
             'Id' INTEGER PRIMARY KEY AUTOINCREMENT,
-            'Winner' INTEGER,
-            'Loser' INTEGER,
-            'WinnerScore' INTEGER,
-            'LoserScore' INTEGER,
-            'Round' INTEGER,
-            'Time' TEXT
+            'Winner' TEXT NOT NULL,
+            'Loser' TEXT NOT NULL,
+            'WinnerScore' INTEGER NOT NULL,
+            'LoserScore' INTEGER NOT NULL,
+            'Round' INTEGER NOT NULL,
+            'Time' TEXT NOT NULL
         );
     '''
     try:
@@ -69,8 +66,8 @@ def create_tournament_db():
     statement = '''
         CREATE TABLE 'Rounds' (
             'Id' INTEGER PRIMARY KEY AUTOINCREMENT,
-            'Name' TEXT,
-            'Date' TEXT
+            'Name' TEXT NOT NULL,
+            'Date' TEXT  NOT NULL
         );
     '''
     try:
@@ -87,14 +84,10 @@ def populate_tournament_db():
     conn = sqlite.connect('big10.sqlite')
     cur = conn.cursor()
 
-    # HINTS:
     # Column order in teams.csv file: Seed,Name,ConfRecord
     # Column order in games.csv file: Winner,Loser,WinnerScore,LoserScore,Round,Time
-    # Note: You must convert 'Winner' and 'Loser' to corresponding team ids from
-    #       'Teams'table
     # Column order in rounds.csv file: Name,Date
 
-    # Your code goes here
     # read data from CSV (teams.csv)
     with open("teams.csv", 'r') as csv_f:
         csv_data = csv.reader(csv_f)
@@ -114,7 +107,20 @@ def populate_tournament_db():
 
 
     # read data from CSV (games.csv)
+    with open("games.csv", 'r') as csv_f:
+        csv_data = csv.reader(csv_f)
 
+        # This skips the first row of the CSV file
+        next(csv_data)
+
+        for row in csv_data:
+            (Winner, Loser, WinnerScore, LoserScore, Round, Time) = row
+            insert_statement = '''
+                INSERT INTO Games(Winner, Loser, WinnerScore, LoserScore, Round, Time) VALUES (?, ?, ?, ?, ?, ?);
+            '''
+            # execute and commit
+            cur.execute(insert_statement, [Winner, Loser, WinnerScore, LoserScore, Round, Time])
+            conn.commit()
 
     # read data from CSV (rounds.csv)
     with open("rounds.csv", 'r') as csv_f:
@@ -132,7 +138,6 @@ def populate_tournament_db():
             # execute and commit
             cur.execute(insert_statement, [Name, Date])
             conn.commit()
-
 
     # Close connection
     conn.close()
