@@ -78,8 +78,6 @@ def create_tournament_db():
     except:
         print("Failure. Please try again.")
     conn.commit()
-
-
     conn.close()
 
 # Populates big10.sqlite database using csv files
@@ -97,9 +95,46 @@ def populate_tournament_db():
     # Column order in rounds.csv file: Name,Date
 
     # Your code goes here
+    # read data from CSV (teams.csv)
+    with open("teams.csv", 'r') as csv_f:
+        csv_data = csv.reader(csv_f)
+
+        # This skips the first row of the CSV file.
+        next(csv_data)
+
+        for row in csv_data:
+            (Seed, Name, ConfRecord) = row
+
+            insert_statement = '''
+                INSERT INTO Teams(Seed, Name, ConfRecord) VALUES (?, ?, ?);
+            '''
+            # execute and commit
+            cur.execute(insert_statement, [Seed, Name, ConfRecord])
+            conn.commit()
+
+
+    # read data from CSV (games.csv)
+
+
+    # read data from CSV (rounds.csv)
+    with open("rounds.csv", 'r') as csv_f:
+        csv_data = csv.reader(csv_f)
+
+        # This skips the first row of the CSV file
+        next(csv_data)
+
+        for row in csv_data:
+            (Name, Date) = row
+
+            insert_statement = '''
+                INSERT INTO Rounds(Name, Date) VALUES (?, ?);
+            '''
+            # execute and commit
+            cur.execute(insert_statement, [Name, Date])
+            conn.commit()
+
 
     # Close connection
-    conn.commit()
     conn.close()
 
 if __name__ == "__main__":
