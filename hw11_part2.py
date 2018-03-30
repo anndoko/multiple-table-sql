@@ -76,6 +76,7 @@ def print_winning_rounds_for_team(team_name):
 # data.  You are permitted to use multiple SQL statements in this function.
 def add_championship_info():
     try:
+        # 1. inseart data into: Rounds
         # connect db
         conn = sqlite.connect("big10.sqlite")
         cur = conn.cursor()
@@ -88,6 +89,7 @@ def add_championship_info():
         cur.execute(statement)
         conn.commit()
 
+        # 2. inseart data into: Games
         # connect db
         conn = sqlite.connect("big10.sqlite")
         cur = conn.cursor()
@@ -114,7 +116,38 @@ def add_championship_info():
 # Note: All of these games will be updated to the same time.
 # You may use multiple SQL statements in this function as well.
 def update_schedule_for_round(round_id, date, time):
-    pass
+    try:
+        # 1. update the data in: Rounds
+        # connect db
+        conn = sqlite.connect("big10.sqlite")
+        cur = conn.cursor()
+
+        # insert the data
+        statement = '''
+            UPDATE Rounds
+            SET Date = "{}"
+            WHERE Id = {}
+        '''.format(date, round_id)
+        # excute the statement
+        cur.execute(statement)
+        conn.commit()
+
+        # 2. update the data in: Games
+        # connect db
+        conn = sqlite.connect("big10.sqlite")
+        cur = conn.cursor()
+        # insert the data
+        statement = '''
+            UPDATE Games
+            SET Time = "{}"
+            WHERE Round = {}
+        '''.format(time, round_id)
+        # excute the statement
+        cur.execute(statement)
+        conn.commit()
+        return "Updated schedule."
+    except:
+        return "Failed to update schedule."
 
 if __name__ == "__main__":
     game_info = get_info_for_game(1)
