@@ -7,9 +7,11 @@ print('\n*********** PART 1 ***********')
 
 # Creates a database called big10.sqlite
 def create_tournament_db():
-
-    conn = sqlite.connect('big10.sqlite')
-    cur = conn.cursor()
+    try:
+        conn = sqlite.connect('big10.sqlite')
+        cur = conn.cursor()
+    except:
+        print("Failed. Please try again.")
 
     # Code below provided for your convenience to clear out the big10 database
     # This is simply to assist in testing your code.  Feel free to comment it
@@ -30,10 +32,55 @@ def create_tournament_db():
     cur.execute(statement)
     conn.commit()
 
-    # Your code goes here
+    # Create table: Teams
+    statement = '''
+        CREATE TABLE 'Teams' (
+            'Id' INTEGER PRIMARY KEY AUTOINCREMENT,
+            'Seed' INTEGER,
+            'Name' TEXT,
+            'ConfRecord' TEXT
+        );
+    '''
+    try:
+        cur.execute(statement)
+    except:
+        print("Failure. Please try again.")
+    conn.commit()
+
+    # Create table: Games
+    statement = '''
+        CREATE TABLE 'Games' (
+            'Id' INTEGER PRIMARY KEY AUTOINCREMENT,
+            'Winner' INTEGER,
+            'Loser' INTEGER,
+            'WinnerScore' INTEGER,
+            'LoserScore' INTEGER,
+            'Round' INTEGER,
+            'Time' TEXT
+        );
+    '''
+    try:
+        cur.execute(statement)
+    except:
+        print("Failure. Please try again.")
+    conn.commit()
+
+    # Create table: Rounds
+    statement = '''
+        CREATE TABLE 'Rounds' (
+            'Id' INTEGER PRIMARY KEY AUTOINCREMENT,
+            'Name' TEXT,
+            'Date' TEXT
+        );
+    '''
+    try:
+        cur.execute(statement)
+    except:
+        print("Failure. Please try again.")
+    conn.commit()
+
 
     conn.close()
-    pass
 
 # Populates big10.sqlite database using csv files
 def populate_tournament_db():
