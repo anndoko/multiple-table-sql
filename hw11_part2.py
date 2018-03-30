@@ -75,7 +75,37 @@ def print_winning_rounds_for_team(team_name):
 # Note: You will need to update the ‘Games’ and ‘Rounds’ tables with the above
 # data.  You are permitted to use multiple SQL statements in this function.
 def add_championship_info():
-    pass
+    try:
+        # connect db
+        conn = sqlite.connect("big10.sqlite")
+        cur = conn.cursor()
+
+        # insert the data
+        statement = '''
+            INSERT INTO Rounds(Name, Date) VALUES ("Championship", "03-04-18")
+        '''
+        # excute the statement
+        cur.execute(statement)
+        conn.commit()
+
+        # connect db
+        conn = sqlite.connect("big10.sqlite")
+        cur = conn.cursor()
+        # insert the data
+        statement = '''
+            INSERT INTO Games(Winner, Loser, WinnerScore, LoserScore, Round, Time)
+            SELECT t1.Id, t2.Id, 75, 66, 5, "4:30pm"
+            FROM Teams AS t1
+            JOIN Teams AS t2
+            WHERE t1.Name="Michigan" AND t2.Name = "Purdue"
+        '''
+        # excute the statement
+        cur.execute(statement)
+        conn.commit()
+
+        return "Added game."
+    except:
+        return "Failed to add game."
 
 # Update the date for the specified round and the times for each of the games
 # in that round
