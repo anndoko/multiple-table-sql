@@ -107,7 +107,6 @@ def populate_tournament_db():
 
 
     # read data from CSV (games.csv)
-
     with open("games.csv", 'r') as csv_f:
         csv_data = csv.reader(csv_f)
 

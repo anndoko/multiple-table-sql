@@ -10,8 +10,28 @@ print('\n*********** PART 2 ***********')
 # {Winner Score}-{Loser Score}
 # Note: You must use only one SQL statement in this function.
 def get_info_for_game(game_id):
-    # Your code goes here
-    pass
+    # connect db
+    conn = sqlite.connect("big10.sqlite")
+    cur = conn.cursor()
+
+    # form the statement
+    statement = '''
+        SELECT r.Name, wt.Seed, wt.Name, g.WinnerScore, lt.Seed, lt.Name, g.LoserScore
+        FROM Rounds AS r
+            JOIN Games AS g ON r.Id = g.Round
+            JOIN Teams AS wt ON g.Winner = wt.Id
+            JOIN Teams AS lt ON g.Loser = lt.Id
+        WHERE r.Id = {}
+    '''.format(game_id)
+
+    # excute the statement
+    output = ""
+    rows = cur.execute(statement).fetchall()
+    for row in rows:
+        (RoundName, WinnerSeed, Winner, WinnerScore, LoserSeed, Loser, LoserScore) = row
+        output += "\n{}: ({}) {} defeated ({}) {}\n{}-{}\n".format(RoundName, WinnerSeed, Winner, LoserSeed, Loser, WinnerScore, LoserScore)
+    conn.commit()
+    return output
 
 # Prints all of the round names a team won (sorted from lowest round id to
 # highest round id) and the corresponding scores
@@ -19,7 +39,6 @@ def get_info_for_game(game_id):
 # Returns: nothing
 # Note: You must use only one SQL statement in this function.
 def print_winning_rounds_for_team(team_name):
-    # Your code goes here
     pass
 
 # Update the database to include the following Championship game information:
